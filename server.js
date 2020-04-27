@@ -18,7 +18,7 @@ const init = async () => {
 
     server.route([
         {
-            method: 'GET',
+            method: 'POST',
             path: '/v1/api/emitNewOrder',
             handler: (request, h) => {
                 const {
