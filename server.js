@@ -17,17 +17,26 @@ const init = async () => {
         });
     });
 
-    server.route({
-        method: 'GET',
-        path: '/',
-        handler: (request, h) => {
-            const {
-                payload
-            } = request
-            io.of(`/${payload.ref}`).emit(payload.event, payload.data)
-            return h.response({data : 'ok'}).status(201)
+    server.route([
+        {
+            method: 'GET',
+            path: '/v1/api/emitNewOrder',
+            handler: (request, h) => {
+                const {
+                    payload
+                } = request
+                io.of(`/${payload.ref}`).emit(payload.event, payload.data)
+                return h.response({data : 'ok'}).code(201)
+            }
+        },
+        {
+            method: 'GET',
+            path: '/',
+            handler: (request, h) => {
+                return h.response({data : 'ok'}).code(201)
+            }
         }
-    });
+    ]);
 
     await server.start();
     console.log('Server running on %s', server.info.uri);
