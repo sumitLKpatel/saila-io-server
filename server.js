@@ -5,7 +5,7 @@ const socket = require('socket.io')
 
 const init = async () => {
     const server = Hapi.server({
-        port: 1555
+        port: process.env.PORT || 1555
     });
     const io = socket(server.listener)
 
