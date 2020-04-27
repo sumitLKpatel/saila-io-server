@@ -24,6 +24,9 @@ const init = async () => {
                 const {
                     payload
                 } = request
+                console.log(payload.ref)
+                console.log(payload.event)
+                console.log(JSON.stringify(payload.data))
                 io.of(`/${payload.ref}`).emit(payload.event, payload.data)
                 return h.response({data : 'ok'}).code(201)
             }
