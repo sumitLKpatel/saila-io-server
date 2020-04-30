@@ -8,14 +8,12 @@ const init = async () => {
         port: process.env.PORT || 1555
     });
     const io = socket(server.listener)
-    
     io.on('connection', (socket) => {
-        console.log('a user connected');
+        console.log('server nsp->%s', socket.nsp.name)
         socket.on('disconnect', () => {
-            console.log('user disconnected');
+            console.log(socket.nsp.name, 'user disconnected');
         });
     });
-
     server.route([
         {
             method: 'POST',
@@ -25,14 +23,31 @@ const init = async () => {
                     payload
                 } = request
                 io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
-                return h.response({data : 'ok'}).code(201)
+                return h.response({ data: 'ok' }).code(201)
             }
         },
         {
             method: 'GET',
             path: '/',
             handler: (request, h) => {
-                return h.response({data : 'ok'}).code(201)
+                return h.response({ data: 'ok' }).code(201)
+            }
+        },
+        {
+            method: 'GET',
+            path: '/initsocket/{ref}',
+            handler: (request, h) => {
+                const {
+                    params: { ref },
+                } = request
+
+                io.of(`/${ref}`).on('connection', (socket) => {
+                    console.log('server nsp->%s', socket.nsp.name)
+                    socket.on('disconnect', () => {
+                        console.log(socket.nsp.name, 'user disconnected');
+                    });
+                });            
+                return h.response({ data: 'ok' }).code(201)
             }
         }
     ]);
