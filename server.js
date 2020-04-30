@@ -2,6 +2,7 @@
 
 const Hapi = require('@hapi/hapi');
 const socket = require('socket.io')
+var url = require('url');
 
 const init = async () => {
     const server = Hapi.server({
@@ -9,6 +10,8 @@ const init = async () => {
     });
     const io = socket(server.listener)
     io.on('connection', (socket) => {
+        const { ns } = url.parse(socket.handshake.url, true).query;
+        console.log('nsp->%s', ns)
         console.log('server nsp->%s', socket.nsp.name)
         socket.on('disconnect', () => {
             console.log(socket.nsp.name, 'user disconnected');
