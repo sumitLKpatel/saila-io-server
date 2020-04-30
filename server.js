@@ -8,7 +8,6 @@ const init = async () => {
         port: process.env.PORT || 1555
     });
     const io = socket(server.listener)
-    const nsp = io.of('/5972247b42b4a32122357c4d');
     console.log(io)
     nsp.on('connection', (socket) => {
         console.log('a user connected');
@@ -28,7 +27,9 @@ const init = async () => {
                 console.log(payload)
                 // console.log(payload)
                 // console.log(JSON.stringify(payload.data))
-                io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
+                const nsp = io.of('/5972247b42b4a32122357c4d');
+                nsp.emit(`${payload.event}`, payload.data)
+                // io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
                 return h.response({data : 'ok'}).code(201)
             }
         },
