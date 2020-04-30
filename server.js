@@ -8,8 +8,9 @@ const init = async () => {
         port: process.env.PORT || 1555
     });
     const io = socket(server.listener)
+    // const nsp = io.of('/my-namespace');
 
-    io.on('connection', (socket) => {
+    nsp.on('connection', (socket) => {
         console.log('a user connected');
         socket.on('disconnect', () => {
             console.log('user disconnected');
@@ -27,7 +28,7 @@ const init = async () => {
                 console.log(payload.ref)
                 console.log(payload.event)
                 console.log(JSON.stringify(payload.data))
-                io.of(`/${payload.ref}`).emit(payload.event, payload.data)
+                io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
                 return h.response({data : 'ok'}).code(201)
             }
         },
