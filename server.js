@@ -12,7 +12,7 @@ const init = async () => {
     io.on('connection', (socket) => {
         const { ns } = url.parse(socket.handshake.url, true).query;
         if (ns) {
-            const nsp = io.of(`/${nspString}`);
+            const nsp = io.of(`/${ns}`);
             nsp.on('connection', function (socket) {
                 console.log(ns, ' connected');
                 socket.on('disconnect', () => {
