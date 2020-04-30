@@ -10,7 +10,7 @@ const init = async () => {
     const io = socket(server.listener)
     // const nsp = io.of('/my-namespace');
 
-    nsp.on('connection', (socket) => {
+    io.on('connection', (socket) => {
         console.log('a user connected');
         socket.on('disconnect', () => {
             console.log('user disconnected');
