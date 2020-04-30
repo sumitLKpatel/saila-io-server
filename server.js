@@ -13,15 +13,18 @@ const init = async () => {
     io.on('connection', (socket) => {
         const { ns } = url.parse(socket.handshake.url, true).query;
         nspString = ns
+        if (ns) {
+            const nsp = io.of(`/${nspString}`);
+            nsp.on('connection', function (socket) {
+                console.log(nsp, 'is connected');
+            });
+        }
+
         console.log('nsp->%s', nspString)
         console.log('server nsp->%s', socket.nsp.name)
         socket.on('disconnect', () => {
             console.log(socket.nsp.name, 'user disconnected');
         });
-    });
-    const nsp = io.of(`/${nspString}`);
-    nsp.on('connection', function (socket) {
-        console.log(nsp, 'is connected');
     });
 
     server.route([
@@ -33,8 +36,8 @@ const init = async () => {
                     payload
                 } = request
                 // io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
-                nsp.emit(`${payload.event}`, payload.data)
-                // io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
+                // nsp.emit(`${payload.event}`, payload.data)
+                io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
                 return h.response({ data: 'ok' }).code(201)
             }
         },
