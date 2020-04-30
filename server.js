@@ -9,18 +9,18 @@ const init = async () => {
         port: process.env.PORT || 1555
     });
     const io = socket(server.listener)
-    let nspString = null
     io.on('connection', (socket) => {
         const { ns } = url.parse(socket.handshake.url, true).query;
         nspString = ns
         if (ns) {
             const nsp = io.of(`/${nspString}`);
             nsp.on('connection', function (socket) {
-                console.log(nsp, 'is connected');
+                console.log(ns, ' connected');
+                socket.on('disconnect', () => {
+                    console.log(ns, ' disconnected');
+                });
             });
         }
-
-        console.log('nsp->%s', nspString)
         console.log('server nsp->%s', socket.nsp.name)
         socket.on('disconnect', () => {
             console.log(socket.nsp.name, 'user disconnected');
@@ -35,8 +35,6 @@ const init = async () => {
                 const {
                     payload
                 } = request
-                // io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
-                // nsp.emit(`${payload.event}`, payload.data)
                 io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
                 return h.response({ data: 'ok' }).code(201)
             }
@@ -45,24 +43,7 @@ const init = async () => {
             method: 'GET',
             path: '/',
             handler: (request, h) => {
-                return h.response({ data: 'ok' }).code(201)
-            }
-        },
-        {
-            method: 'GET',
-            path: '/initsocket/{ref}',
-            handler: (request, h) => {
-                const {
-                    params: { ref },
-                } = request
-
-                io.of(`/${ref}`).on('connection', (socket) => {
-                    console.log('server nsp->%s', socket.nsp.name)
-                    socket.on('disconnect', () => {
-                        console.log(socket.nsp.name, 'user disconnected');
-                    });
-                });
-                return h.response({ data: 'ok' }).code(201)
+                return h.response({ data: 'Socket server is running' }).code(201)
             }
         }
     ]);
