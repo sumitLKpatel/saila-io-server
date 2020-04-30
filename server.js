@@ -9,7 +9,7 @@ const init = async () => {
     });
     const io = socket(server.listener)
     // const nsp = io.of('/my-namespace');
-
+    console.log(io)
     io.on('connection', (socket) => {
         console.log('a user connected');
         socket.on('disconnect', () => {
