@@ -8,7 +8,7 @@ const init = async () => {
         port: process.env.PORT || 1555
     });
     const io = socket(server.listener)
-    console.log(io)
+    
     io.on('connection', (socket) => {
         console.log('a user connected');
         socket.on('disconnect', () => {
@@ -19,16 +19,11 @@ const init = async () => {
     server.route([
         {
             method: 'POST',
-            path: '/v1/api/emitNewOrder',
+            path: '/v1/api/emitEvent',
             handler: (request, h) => {
                 const {
                     payload
                 } = request
-                console.log(payload)
-                // console.log(payload)
-                // console.log(JSON.stringify(payload.data))
-                // const nsp = io.of('/5972247b42b4a32122357c4d');
-                // nsp.emit(`${payload.event}`, payload.data)
                 io.of(`/${payload.ref}`).emit(`${payload.event}`, payload.data)
                 return h.response({data : 'ok'}).code(201)
             }
@@ -47,7 +42,6 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
-
     console.log(err);
     process.exit(1);
 });
