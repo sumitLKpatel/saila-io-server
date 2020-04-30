@@ -11,7 +11,6 @@ const init = async () => {
     const io = socket(server.listener)
     io.on('connection', (socket) => {
         const { ns } = url.parse(socket.handshake.url, true).query;
-        nspString = ns
         if (ns) {
             const nsp = io.of(`/${nspString}`);
             nsp.on('connection', function (socket) {
