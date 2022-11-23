@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^19.1.1",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.5.0",
     "url": "^0.11.0"
   }
 }
